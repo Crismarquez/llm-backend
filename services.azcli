@@ -1,0 +1,12 @@
+
+# create Azure Container Register
+az acr create --resource-group AAA --name acrbackendtemplate --sku Basic --admin-enabled true
+
+# create Azure App Service Plan
+az appservice plan create --name asbackendtemplate --resource-group AAA --sku B1 --is-linux
+
+# upload image
+az acr build --resource-group AAA --registry acrbackendtemplate --image llm-backend:latest .
+
+# create web app
+az webapp create --resource-group AAA --plan asbackendtemplate --name wappbackendtemplate --docker-registry-server-user acrbackendtemplate ---docker-registry-server-password "" -role acrpull --deployment-container-image-name acrbackendtemplate.azurecr.io/llm-backend:latest
